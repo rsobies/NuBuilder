@@ -99,7 +99,7 @@ namespace Rsobies.NuBuilder
                     return _libType;
                 }
 
-                var projectType = Command1.GetConiguration(project);
+                var projectType = BuildCommand.GetConiguration(project);
                 if (projectType == "DynamicLibrary")
                 {
                     _libType = LibType.Dynamic;

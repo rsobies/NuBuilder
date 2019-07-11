@@ -10,7 +10,7 @@ namespace Rsobies.NuBuilder
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class Command1
+    internal sealed class BuildCommand
     {
         /// <summary>
         /// Command ID.
@@ -28,12 +28,12 @@ namespace Rsobies.NuBuilder
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Command1"/> class.
+        /// Initializes a new instance of the <see cref="BuildCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private Command1(AsyncPackage package, OleMenuCommandService commandService)
+        private BuildCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -73,7 +73,7 @@ namespace Rsobies.NuBuilder
             var cmd = (OleMenuCommand)sender;
 
            
-            var projectType = Command1.GetConiguration(project);
+            var projectType = BuildCommand.GetConiguration(project);
             if (project.FileName.IndexOf(".vcxproj") != -1 &&
                 (projectType == "DynamicLibrary" ||
                 projectType == "StaticLibrary"))
@@ -89,7 +89,7 @@ namespace Rsobies.NuBuilder
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static Command1 Instance
+        public static BuildCommand Instance
         {
             get;
             private set;
@@ -117,7 +117,7 @@ namespace Rsobies.NuBuilder
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new Command1(package, commandService);
+            Instance = new BuildCommand(package, commandService);
         }
 
 
