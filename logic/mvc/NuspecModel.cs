@@ -70,7 +70,7 @@ namespace Rsobies.NuBuilder
                     }
 
                 }
-                catch (FileNotFoundException)
+                catch (Exception)
                 {
                     spec = new NuSpec
                     {
@@ -80,10 +80,11 @@ namespace Rsobies.NuBuilder
                         Version = "1.0.0",
                         Tags = "native",
                         Description = "opis",
-                        Relnotes = "relnotes"
+                        Relnotes = "relnotes",
+                        Author="rsobies"
                     };
                 }
-
+               
                 _nuspec = spec;
                 return _nuspec;
             }
