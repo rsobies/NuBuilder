@@ -6,9 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Rsobies.NuBuilder
 {
@@ -56,11 +55,11 @@ namespace Rsobies.NuBuilder
 
                 try
                 {
-                    IFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(String.Format("{0}nuspec.bin", ProjectDir), FileMode.Open, FileAccess.Read, FileShare.Read);
-                    spec = (NuSpec)formatter.Deserialize(stream);
+                    XmlSerializer serializer = new XmlSerializer(typeof(NuSpec));
+                    Stream stream = new FileStream(String.Format("{0}nuspec.bin", ProjectDir), FileMode.Open);
+                    spec = (NuSpec)serializer.Deserialize(stream);
                     stream.Close();
-
+                   
                     if (spec.DirsToRemove != null)
                     {
                         foreach (var file in spec.Files)
@@ -72,6 +71,7 @@ namespace Rsobies.NuBuilder
                 }
                 catch (Exception)
                 {
+                    
                     spec = new NuSpec
                     {
                         Id = project.Name,
@@ -84,6 +84,7 @@ namespace Rsobies.NuBuilder
                         Author="rsobies"
                     };
                 }
+                
                
                 _nuspec = spec;
                 return _nuspec;
@@ -482,11 +483,12 @@ namespace Rsobies.NuBuilder
                 ZipFile.ExtractToDirectory(zipPath, ProjectDir);
             }
 
-            IFormatter formatter = new BinaryFormatter();
+            XmlSerializer serializer = new XmlSerializer(typeof(NuSpec));
             Stream stream = new FileStream(String.Format("{0}nuspec.bin", ProjectDir),
-                        FileMode.Create, FileAccess.Write, FileShare.None);
-            formatter.Serialize(stream, spec);
+                    FileMode.Create, FileAccess.Write);
+            serializer.Serialize(stream, spec);
             stream.Close();
+            
 
             var firstProc = new System.Diagnostics.Process();
             firstProc.StartInfo.FileName = nugetPath;
